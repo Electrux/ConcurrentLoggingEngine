@@ -1,0 +1,41 @@
+\documentclass{article}
+
+\usepackage{indentfirst}
+\usepackage{inconsolata}
+\renewcommand*\familydefault{\ttdefault} %% Only if the base font of the document is to be typewriter style
+\usepackage[T1]{fontenc}
+
+\author{Electrux Redsworth}
+\title{Electrux Async Logging Engine - Time Management}
+
+\begin{document}
+
+\section{Format Specifiers} \label{fmt_specs}
+
+\begin{enumerate}
+
+\item \textbf{HH} - Hours in 24 hour format.
+\item \textbf{MM} - Minutes from 1-60.
+\item \textbf{SS} - Seconds from 1-60.
+
+\item \textbf{D} - Date in number from 1-31.
+
+\item \textbf{d} - Day in number from 0-6 \textit{Starting from 0 for Sunday}.
+\item \textbf{ds} - Day in words.
+\item \textbf{dss} - Day in words - short.
+
+\item \textbf{M} - Month in number from 0-11 \textit{Starting from 0 for January}.
+\item \textbf{MS} - Month in words.
+\item \textbf{MSS} - Month in words - short.
+
+\item \textbf{Y} - Year in number.
+\item \textbf{YS} - Year in number - short ( 2 digits ).
+
+\end{enumerate}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

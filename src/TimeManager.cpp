@@ -53,7 +53,7 @@ std::string TimeManager::ReplaceSpecifierByTime( const std::time_t * time, const
 
 TimeManager::TimeManager()
 {
-	this->format = "%ds% %MS% %D% %YS% - %HH%:%MM%:%SS%";
+	this->format = DEFAULT_TIMEDATE_FORMAT;
 }
 
 void TimeManager::SetFormat( const std::string & formatstr )

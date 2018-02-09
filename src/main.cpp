@@ -9,7 +9,7 @@ int main()
 {
 	Logger logger;
 
-	logger.SetLogFile( "test.log" );
+	logger.SetMaxLogsPerIteration( 25 );
 
 	if( !logger.BeginLogging() )
 		std::cout << "Initiating logging failed. Error: " << GetLastErrorStr() << std::endl;

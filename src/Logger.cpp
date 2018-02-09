@@ -74,6 +74,7 @@ void Logger::InternalBeginLogging()
 	}
 
 	using namespace std::chrono_literals;
+	int ctr;
 	while( true ) {
 		std::this_thread::sleep_for( 250ms );
 		std::lock_guard< std::mutex > mtx_guard( mtx );
@@ -91,7 +92,8 @@ void Logger::InternalBeginLogging()
 			file.close();
 		}
 
-		while( !this->logstrings.empty() ) {
+		ctr = 0;
+		while( !this->logstrings.empty() && ctr < this->max_logs_per_iter ) {
 			std::string fmtstr = this->GetFormattedLogString( * logstrings.begin() );
 
 			if( this->logfile ) {
@@ -106,6 +108,7 @@ void Logger::InternalBeginLogging()
 			}
 
 			logstrings.erase( logstrings.begin() );
+			++ctr;
 		}
 	}
 
@@ -146,13 +149,15 @@ Logger::Logger()
 {
 	loglevel = LogLevels::ALL;
 
+	max_logs_per_iter = DEFAULT_MAX_LOGS_PER_ITERATION;
+
 	logfile = false;
 	logconsole = true;
 	logconsolelocation = LogConsoleLocation::CERR;
 
 	continue_logging = false;
 
-	logformat = "%t% -> [ %S% ][ %s% ] : %l";
+	logformat = DEFAULT_LOG_FORMAT;
 
 	section = "Default";
 	subsection = "Default";
@@ -172,24 +177,21 @@ void Logger::AddLogStrings( const LogLevels & loglevel, const std::vector< std::
 {
 	if( ( int )this->loglevel < ( int )loglevel )
 		return;
+	// Time before lock guard since we can't be sure how long lock guard will take to aquire mutex.
+	auto currtime = std::time( NULL );
 	std::lock_guard< std::mutex > mtx_guard( mtx );
 	for( auto logstr : logstrs )
-		logstrings.push_back( { logstr, std::time( NULL ) } );
+		logstrings.push_back( { logstr, currtime } );
 }
 
 void Logger::AddLogString( const LogLevels & loglevel, const std::string & logstr )
 {
 	if( ( int )this->loglevel < ( int )loglevel )
 		return;
+	// Time before lock guard since we can't be sure how long lock guard will take to aquire mutex.
+	auto currtime = std::time( NULL );
 	std::lock_guard< std::mutex > mtx_guard( mtx );
-	logstrings.push_back( { logstr, std::time( NULL ) } );
-}
-
-void Logger::SetLogFile( const std::string & filename )
-{
-	std::lock_guard< std::mutex > mtx_guard( mtx );
-	this->filename = filename;
-	this->logfile = true;
+	logstrings.push_back( { logstr, currtime } );
 }
 
 bool Logger::BeginLogging()
@@ -254,6 +256,31 @@ bool Logger::IsLogging()
 {
 	std::lock_guard< std::mutex > mtx_guard( mtx );
 	return this->continue_logging;
+}
+
+void Logger::SetMaxLogsPerIteration( const int & max_logs )
+{
+	std::lock_guard< std::mutex > mtx_guard( mtx );
+	this->max_logs_per_iter = max_logs;
+}
+
+int Logger::GetMaxLogsPerIteration()
+{
+	std::lock_guard< std::mutex > mtx_guard( mtx );
+	return this->max_logs_per_iter;
+}
+
+void Logger::SetLogFile( const std::string & filename )
+{
+	std::lock_guard< std::mutex > mtx_guard( mtx );
+	this->filename = filename;
+	this->logfile = true;
+}
+
+std::string Logger::GetLogFile()
+{
+	std::lock_guard< std::mutex > mtx_guard( mtx );
+	return this->filename;
 }
 
 void Logger::SetLogFormat( const std::string & format )

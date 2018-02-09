@@ -22,6 +22,8 @@ class Logger
 
 	LogLevels loglevel;
 
+	int max_logs_per_iter;
+
 	bool logfile;
 	bool logconsole;
 	LogConsoleLocation logconsolelocation;
@@ -58,7 +60,11 @@ public:
 	bool EndLogging();
 	bool IsLogging();
 
+	void SetMaxLogsPerIteration( const int & max_logs );
+	int GetMaxLogsPerIteration();
+
 	void SetLogFile( const std::string & file );
+	std::string GetLogFile();
 
 	void SetLogFormat( const std::string & format );
 	std::string GetLogFormat();

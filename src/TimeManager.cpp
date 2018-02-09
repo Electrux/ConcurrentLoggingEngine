@@ -2,11 +2,11 @@
 #include <string>
 #include <ctime>
 
-#include "../include/Errors.hpp"
+#include "../include/Core.hpp"
 
 #include "../include/TimeManager.hpp"
 
-std::string TimeManager::ReplaceSpecifierByTime( std::time_t * time, const std::string & fmtspecifier )
+std::string TimeManager::ReplaceSpecifierByTime( const std::time_t * time, const std::string & fmtspecifier )
 {
 	std::tm * t = std::localtime( time );
 	if( fmtspecifier == "HH" )
@@ -46,7 +46,7 @@ std::string TimeManager::ReplaceSpecifierByTime( std::time_t * time, const std::
 		return std::to_string( t->tm_year + 1900 ).substr( 2 );
 
 	SetLastError( Errors::UNDEFINED_FORMAT_SPECIFIER,
-		"[ TimeManager ][ ReplaceSpecifierByTime ]: Used unkown format specifier: " + fmtspecifier + "." );
+		"[ TimeManager ][ ReplaceSpecifierByTime ]: Used unknown format specifier: " + fmtspecifier + "." );
 
 	return "";
 }
@@ -56,10 +56,21 @@ TimeManager::TimeManager()
 	this->format = "%ds% %MS% %D% %YS% - %HH%:%MM%:%SS%";
 }
 
-std::string TimeManager::GetFormattedDateTime( std::time_t * time )
+void TimeManager::SetFormat( const std::string & formatstr )
+{
+	this->format = formatstr;
+}
+
+std::string TimeManager::GetFormat()
+{
+	return this->format;
+}
+
+std::string TimeManager::GetFormattedDateTime( const std::time_t * const_time )
 {
 	bool new_time_alloc = false;
 
+	std::time_t * time = ( std::time_t * )const_time;
 	if( time == nullptr ) {
 		time = new std::time_t;
 		* time = std::time( nullptr );
@@ -70,9 +81,9 @@ std::string TimeManager::GetFormattedDateTime( std::time_t * time )
 
 	std::string tmpstr;
 	for( auto it = fmtdt.begin(); it != fmtdt.end(); ) {
-		if( * it == '%' ) {
+		if( * it == FMT_SPECIFIER_BEGIN ) {
 			it = fmtdt.erase( it );
-			while( it != fmtdt.end() && * it != '%' ) {
+			while( it != fmtdt.end() && * it != FMT_SPECIFIER_END ) {
 				tmpstr += * it;
 				it = fmtdt.erase( it );
 			}
@@ -86,7 +97,7 @@ std::string TimeManager::GetFormattedDateTime( std::time_t * time )
 				return "";
 			}
 
-			fmtdt.insert( it, replstr.begin(), replstr.end() );
+			it = fmtdt.insert( it, replstr.begin(), replstr.end() );
 
 			it += replstr.size();
 			tmpstr.clear();

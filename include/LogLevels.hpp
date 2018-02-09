@@ -6,16 +6,24 @@
 enum class LogLevels
 {
 	MSG,
-	WARNING,
 	ERROR,
+	WARNING,
+	ALL,
 
 	LAST
 };
 
-const std::string LOGLEVELSTR[ LogLevels::LAST ] = {
+enum class LogConsoleLocation
+{
+	COUT,
+	CERR,
+};
+
+const std::string LOGLEVELSTR[ ( int )LogLevels::LAST ] = {
 	"Message",
-	"Warning",
 	"Error",
+	"Warning",
+	"All",
 };
 
 #endif // LOGLEVELS_HPP

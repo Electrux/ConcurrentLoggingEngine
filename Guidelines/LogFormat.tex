@@ -1,0 +1,52 @@
+\documentclass{article}
+
+%% Important.
+\usepackage{indentfirst}
+\usepackage{csquotes}
+\usepackage{graphicx}
+
+%% Enable hyperlinks with colors and enable references as names.
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  filecolor=magenta,      
+  urlcolor=cyan,
+}
+\usepackage{nameref}
+
+\usepackage[sfdefault]{FiraSans} %% option 'sfdefault' activates Fira Sans as the default text font
+\usepackage[T1]{fontenc}
+\renewcommand*\oldstylenums[1]{{\firaoldstyle #1}}
+
+%% For decreasing margin size.
+\usepackage[margin=0.5in]{geometry}
+
+%% For decreasing Left margin size in itemize.
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=0.7in}
+
+\author{Electrux Redsworth}
+\title{Electrux Async Logging Engine - Log Format}
+
+\begin{document}
+
+\maketitle
+
+\section{Format Specifiers}
+
+\begin{enumerate}
+
+\item \textbf{t} - Formatted Time String
+\item \textbf{S} - Log Section ( eg. CORE, DB, ... )
+\item \textbf{s} - Log Subsection ( eg. Function names )
+\item \textbf{l} - Log String
+
+\end{enumerate}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

@@ -8,14 +8,21 @@ enum class Errors
 	SUCCESS,
 	UNKNOWN_FAILURE,
 	UNDEFINED_FORMAT_SPECIFIER,
+	VAR_NOT_SET,
+	FILE_NOT_OPEN,
 
 	LAST
 };
 
+const char FMT_SPECIFIER_BEGIN = '%';
+const char FMT_SPECIFIER_END = '%';
+
 const std::string ERRORSTR[ ( int )Errors::LAST ] = {
 	"Success",
 	"Unknown Failure",
-	"Undefined Format Specifier"
+	"Undefined Format Specifier",
+	"Variable Not Set",
+	"File cannot be openend",
 };
 
 static Errors last_error;

@@ -1,6 +1,6 @@
 #include <string>
 
-#include "../include/Errors.hpp"
+#include "../include/Core.hpp"
 
 Errors SetLastError( const Errors & err, const std::string & err_str )
 {

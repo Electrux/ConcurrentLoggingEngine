@@ -4,7 +4,7 @@
 #include <string>
 #include <ctime>
 
-#include "Errors.hpp"
+#include "Core.hpp"
 
 const std::string DAYS[ 7 ] = {
 	"Sunday",
@@ -59,12 +59,13 @@ const std::string MONTHS_SHORT[ 12 ] = {
 class TimeManager
 {
 	std::string format;
-	std::string ReplaceSpecifierByTime( std::time_t * time, const std::string & fmtspecifier );
+	std::string ReplaceSpecifierByTime( const std::time_t * time, const std::string & fmtspecifier );
 public:
 	TimeManager();
 	void SetFormat( const std::string & formatstr );
+	std::string GetFormat();
 
-	std::string GetFormattedDateTime( std::time_t * time = nullptr );
+	std::string GetFormattedDateTime( const std::time_t * const_time = nullptr );
 };
 
 #endif // TIMEMANAGER_HPP

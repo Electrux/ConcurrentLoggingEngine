@@ -10,6 +10,8 @@ int main()
 	Logger logger;
 
 	logger.SetMaxLogsPerIteration( 25 );
+	logger.SetLogSection( "Test" );
+	logger.SetLogSubSection( "SubTest" );
 
 	if( !logger.BeginLogging() )
 		std::cout << "Initiating logging failed. Error: " << GetLastErrorStr() << std::endl;

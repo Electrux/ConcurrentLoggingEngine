@@ -3,6 +3,12 @@
 .vscode/
 *.swp
 
+# TeX intermediate files #
+##########################
+*.out
+*.aux
+*.el
+
 # Build files #
 ###############
 build/

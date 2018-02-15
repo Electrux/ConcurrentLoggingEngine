@@ -36,8 +36,8 @@ class Logger
 
 	std::string filename;
 
-	std::string section;
-	std::string subsection;
+	std::vector< std::string > nestedsections;
+	std::string sections;
 
 	std::vector< TimedString > logstrings;
 
@@ -69,11 +69,10 @@ public:
 	void SetLogFormat( const std::string & format );
 	std::string GetLogFormat();
 
-	void SetLogSection( const std::string & section );
-	std::string GetLogSection();
+	void AddLogSection( const std::string & section );
+	std::string GetLastLogSection();
 
-	void SetLogSubSection( const std::string & subsection );
-	std::string GetLogSubSection();
+	bool RemoveLastLogSection();
 
 	void SetLogOnConsole( bool val );
 	bool GetLogOnConsole();

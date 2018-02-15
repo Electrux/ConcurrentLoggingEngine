@@ -16,11 +16,8 @@ std::string Logger::ReplaceSpecifierByInformation( const std::string & specifier
 	if( specifier == "t" )
 		return this->timemgr.GetFormattedDateTime( & logmsg.time );
 
-	if( specifier == "S" )
-		return this->section;
-
 	if( specifier == "s" )
-		return this->subsection;
+		return this->sections;
 
 	if( specifier == "l" )
 		return logmsg.data;
@@ -159,8 +156,7 @@ Logger::Logger()
 
 	logformat = DEFAULT_LOG_FORMAT;
 
-	section = "Default";
-	subsection = "Default";
+	sections = "";
 }
 
 Logger::~Logger()
@@ -295,28 +291,51 @@ std::string Logger::GetLogFormat()
 	return this->logformat;
 }
 
-void Logger::SetLogSection( const std::string & section )
+void Logger::AddLogSection( const std::string & section )
 {
 	std::lock_guard< std::mutex > mtx_guard( mtx );
-	this->section = section;
+
+	this->nestedsections.push_back( section );
+
+	this->sections = "[ ";
+	for( auto it = this->nestedsections.begin(); it != this->nestedsections.end(); ++it ) {
+		if( it == this->nestedsections.end() - 1 ) {
+			this->sections += * it + " ]";
+			continue;
+		}
+
+		this->sections += * it + " ][ ";
+	}
 }
 
-std::string Logger::GetLogSection()
+std::string Logger::GetLastLogSection()
 {
 	std::lock_guard< std::mutex > mtx_guard( mtx );
-	return this->section;
+
+	if( this->nestedsections.empty() )
+		return "";
+
+	return * ( this->nestedsections.end() - 1 );
 }
 
-void Logger::SetLogSubSection( const std::string & subsection )
+bool Logger::RemoveLastLogSection()
 {
 	std::lock_guard< std::mutex > mtx_guard( mtx );
-	this->subsection = subsection;
-}
 
-std::string Logger::GetLogSubSection()
-{
-	std::lock_guard< std::mutex > mtx_guard( mtx );
-	return this->subsection;
+	if( this->nestedsections.empty() )
+		return false;
+
+	this->nestedsections.pop_back();
+
+	this->sections = "[ ";
+	for( auto it = this->nestedsections.begin(); it != this->nestedsections.end(); ++it ) {
+		if( it == this->nestedsections.end() - 1 ) {
+			this->sections += * it + " ]";
+			continue;
+		}
+
+		this->sections += * it + " ][ ";
+	}
 }
 
 void Logger::SetLogOnConsole( bool val )

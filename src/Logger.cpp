@@ -142,7 +142,7 @@ void Logger::InternalBeginLogging()
 	SetLastError( Errors::SUCCESS, "[ Logger ][ InternalBeginLogging ]: Logging finished. Exiting async execution." );
 }
 
-Logger::Logger()
+Logger::Logger() : logformat( DEFAULT_LOG_FORMAT ), sections( "" )
 {
 	loglevel = LogLevels::ALL;
 
@@ -153,10 +153,6 @@ Logger::Logger()
 	logconsolelocation = LogConsoleLocation::CERR;
 
 	continue_logging = false;
-
-	logformat = DEFAULT_LOG_FORMAT;
-
-	sections = "";
 }
 
 Logger::~Logger()

@@ -3,7 +3,7 @@
 
 #include "../include/StringFuncs.hpp"
 
-void ReplaceInString( std::string & str, const std::string from, const std::string to )
+void ReplaceInString( std::string & str, const std::string & from, const std::string & to )
 {
 	size_t n = 0;
 

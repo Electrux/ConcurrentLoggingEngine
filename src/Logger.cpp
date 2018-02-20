@@ -71,7 +71,7 @@ void Logger::InternalBeginLogging()
 	}
 
 	using namespace std::chrono_literals;
-	int ctr;
+
 	while( true ) {
 		std::this_thread::sleep_for( 250ms );
 		std::lock_guard< std::mutex > mtx_guard( mtx );
@@ -89,7 +89,7 @@ void Logger::InternalBeginLogging()
 			file.close();
 		}
 
-		ctr = 0;
+		int ctr = 0;
 		while( !this->logstrings.empty() && ctr < this->max_logs_per_iter ) {
 			std::string fmtstr = this->GetFormattedLogString( * logstrings.begin() );
 

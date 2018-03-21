@@ -17,7 +17,7 @@ std::string Logger::ReplaceSpecifierByInformation( const std::string & specifier
 		return this->timemgr.GetFormattedDateTime( & logmsg.time );
 
 	if( specifier == "s" )
-		return this->sections;
+		return this->sections.empty() ? "default" : this->sections;
 
 	if( specifier == "l" )
 		return logmsg.data;
@@ -332,6 +332,8 @@ bool Logger::RemoveLastLogSection()
 
 		this->sections += * it + " ][ ";
 	}
+
+	return true;
 }
 
 void Logger::SetLogOnConsole( bool val )

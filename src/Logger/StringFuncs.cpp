@@ -1,7 +1,7 @@
 #include <string>
 #include <vector>
 
-#include "../include/StringFuncs.hpp"
+#include "../../include/Logger/StringFuncs.hpp"
 
 void ReplaceInString( std::string & str, const std::string & from, const std::string & to )
 {

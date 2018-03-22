@@ -2,8 +2,8 @@
 #include <string>
 #include <thread>
 
-#include "../include/Core.hpp"
-#include "../include/Logger.hpp"
+#include "../include/Logger/Core.hpp"
+#include "../include/Logger/Logger.hpp"
 
 int main()
 {

@@ -5,11 +5,11 @@
 #include <mutex>
 #include <thread>
 
-#include "../include/Core.hpp"
-#include "../include/LogLevels.hpp"
-#include "../include/TimeManager.hpp"
+#include "../../include/Logger/Core.hpp"
+#include "../../include/Logger/LogLevels.hpp"
+#include "../../include/Logger/TimeManager.hpp"
 
-#include "../include/Logger.hpp"
+#include "../../include/Logger/Logger.hpp"
 
 std::string Logger::ReplaceSpecifierByInformation( const std::string & specifier, const TimedString & logmsg )
 {
@@ -17,7 +17,7 @@ std::string Logger::ReplaceSpecifierByInformation( const std::string & specifier
 		return this->timemgr.GetFormattedDateTime( & logmsg.time );
 
 	if( specifier == "s" )
-		return this->sections.empty() ? "default" : this->sections;
+		return logmsg.sections.empty() ? "default" : logmsg.sections;
 
 	if( specifier == "l" )
 		return logmsg.data;
@@ -44,7 +44,9 @@ std::string Logger::GetFormattedLogString( const TimedString & logmsg )
 				it = fmtdt.erase( it );
 
 			std::string replstr = ReplaceSpecifierByInformation( tmpstr, logmsg );
+
 			if( replstr.empty() ) {
+				std::cout << "\nTmpStr: " << tmpstr << std::endl;
 				return "";
 			}
 
@@ -183,7 +185,7 @@ void Logger::AddLogString( const LogLevels & loglevel, const std::string & logst
 	// Time before lock guard since we can't be sure how long lock guard will take to aquire mutex.
 	auto currtime = std::time( NULL );
 	std::lock_guard< std::mutex > mtx_guard( mtx );
-	logstrings.push_back( { logstr, currtime } );
+	logstrings.push_back( { logstr, currtime, this->sections } );
 }
 
 bool Logger::BeginLogging()

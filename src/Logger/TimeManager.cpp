@@ -2,9 +2,9 @@
 #include <string>
 #include <ctime>
 
-#include "../include/Core.hpp"
+#include "../../include/Logger/Core.hpp"
 
-#include "../include/TimeManager.hpp"
+#include "../../include/Logger/TimeManager.hpp"
 
 std::string TimeManager::ReplaceSpecifierByTime( const std::time_t * time, const std::string & fmtspecifier )
 {

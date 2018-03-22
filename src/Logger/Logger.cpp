@@ -17,7 +17,7 @@ std::string Logger::ReplaceSpecifierByInformation( const std::string & specifier
 		return this->timemgr.GetFormattedDateTime( & logmsg.time );
 
 	if( specifier == "s" )
-		return logmsg.sections.empty() ? "default" : logmsg.sections;
+		return logmsg.sections.empty() ? "[ Default ]" : logmsg.sections;
 
 	if( specifier == "l" )
 		return logmsg.data;

@@ -175,7 +175,7 @@ void Logger::AddLogStrings( const LogLevels & loglevel, const std::vector< std::
 	auto currtime = std::time( NULL );
 	std::lock_guard< std::mutex > mtx_guard( mtx );
 	for( auto logstr : logstrs )
-		logstrings.push_back( { logstr, currtime } );
+		logstrings.push_back( { logstr, currtime, this->sections } );
 }
 
 void Logger::AddLogString( const LogLevels & loglevel, const std::string & logstr )

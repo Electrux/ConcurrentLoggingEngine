@@ -46,7 +46,6 @@ std::string Logger::GetFormattedLogString( const TimedString & logmsg )
 			std::string replstr = ReplaceSpecifierByInformation( tmpstr, logmsg );
 
 			if( replstr.empty() ) {
-				std::cout << "\nTmpStr: " << tmpstr << std::endl;
 				return "";
 			}
 
@@ -144,7 +143,7 @@ void Logger::InternalBeginLogging()
 	SetLastError( Errors::SUCCESS, "[ Logger ][ InternalBeginLogging ]: Logging finished. Exiting async execution." );
 }
 
-Logger::Logger() : logformat( DEFAULT_LOG_FORMAT ), sections( "" )
+Logger::Logger() : logformat( GetDefaultLogFormat() ), sections( "" )
 {
 	loglevel = LogLevels::ALL;
 
@@ -163,6 +162,7 @@ Logger::~Logger()
 		std::lock_guard< std::mutex > mtx_guard( mtx );
 		this->continue_logging = false;
 	}
+
 	for( auto & t : threadpool )
 		t.join();
 }

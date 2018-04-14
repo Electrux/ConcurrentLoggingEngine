@@ -1,0 +1,19 @@
+name: AsyncLoggingEngine
+version: 0.2
+lang: c++
+std: 14
+compile_flags: -O2
+license: bsd3
+author:
+  name: Electrux
+  email: ckhandelwal13@gmail.com
+libs:
+  []
+builds:
+  - name: EALE
+    type: bin
+    main_src: src/main.cpp
+    other_src:
+      - src/(.*).cpp
+    exclude:
+      []

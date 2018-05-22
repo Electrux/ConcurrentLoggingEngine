@@ -1,4 +1,5 @@
 #include <string>
+#include <cstring>
 
 #include "../../include/Logger/Core.hpp"
 

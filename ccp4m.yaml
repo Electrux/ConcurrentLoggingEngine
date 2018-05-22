@@ -1,19 +1,38 @@
 name: AsyncLoggingEngine
-version: 0.2
+version: 0.3
 lang: c++
 std: 14
 compile_flags: -O2
 license: bsd3
 author:
   name: Electrux
-  email: ckhandelwal13@gmail.com
+  email: ElectruxRedsworth@gmail.com
 libs:
-  []
+  - name: pthread
+    version: 0
+    inc_flags: ""
+    lib_flags: -lpthread
 builds:
-  - name: EALE
-    type: bin
-    main_src: src/main.cpp
+  - name: loggingengine
+    type: lib
+    build_type: static
     other_src:
       - src/(.*).cpp
+    exclude:
+      []
+  - name: loggingengine
+    type: lib
+    build_type: dynamic
+    other_src:
+      - src/(.*).cpp
+    exclude:
+      []
+  - name: Basic_test
+    type: test
+    pre_exec: DYLD_LIBRARY_PATH={DYLD_LIBRARY_PATH}:./lib LD_LIBRARY_PATH={LD_LIBRARY_PATH}:./lib
+    main_src: tests/basic_test.cpp
+    lib_flags: -L./lib/ -lloggingengine
+    other_src:
+      []
     exclude:
       []

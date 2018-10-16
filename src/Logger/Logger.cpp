@@ -11,7 +11,8 @@
 
 #include "../../include/Logger/Logger.hpp"
 
-std::string Logger::ReplaceSpecifierByInformation( const std::string & specifier, const TimedString & logmsg )
+std::string Logger::ReplaceSpecifierByInformation( const std::string & specifier,
+						   const TimedString & logmsg )
 {
 	if( specifier == "t" )
 		return this->timemgr.GetFormattedDateTime( & logmsg.time );
@@ -22,15 +23,17 @@ std::string Logger::ReplaceSpecifierByInformation( const std::string & specifier
 	if( specifier == "l" )
 		return logmsg.data;
 
-	SetLastError( Errors::UNDEFINED_FORMAT_SPECIFIER, "[ Logger ][ ReplaceSpecifierByInformation ]: Used unknown format specifier: "
-			+ specifier + "." );
+	SetLastError( Errors::UNDEFINED_FORMAT_SPECIFIER,
+		      "[ Logger ][ ReplaceSpecifierByInformation ]: "
+		      "Used unknown format specifier: " + specifier + "." );
 
 	return "";
 }
 
 std::string Logger::GetFormattedLogString( const TimedString & logmsg )
 {
-	// No lock guard here because this function is called by BeginLogging which locks the mutex itself.
+	// No lock guard here because this function is called by BeginLogging
+	// which locks the mutex itself.
 	std::string fmtdt = this->logformat;
 	std::string tmpstr;
 	for( auto it = fmtdt.begin(); it != fmtdt.end(); ) {
@@ -43,7 +46,8 @@ std::string Logger::GetFormattedLogString( const TimedString & logmsg )
 			if( !tmpstr.empty() )
 				it = fmtdt.erase( it );
 
-			std::string replstr = ReplaceSpecifierByInformation( tmpstr, logmsg );
+			std::string replstr =
+				ReplaceSpecifierByInformation( tmpstr, logmsg );
 
 			if( replstr.empty() ) {
 				return "";
@@ -68,7 +72,9 @@ void Logger::InternalBeginLogging()
 	if( this->logfile ) {
 		file.open( this->filename, std::ios::out | std::ios::app );
 		if( file )
-			file << "---------BEGIN: " << this->timemgr.GetFormattedDateTime() << "-----------\n" << std::endl;
+			file << "---------BEGIN: "
+			     << this->timemgr.GetFormattedDateTime()
+			     << "-----------\n" << std::endl;
 	}
 
 	using namespace std::chrono_literals;
@@ -82,17 +88,22 @@ void Logger::InternalBeginLogging()
 		if( this->logfile && !file ) {
 			file.open( this->filename, std::ios::out | std::ios::app );
 			if( file )
-				file << "---------BEGIN: " << this->timemgr.GetFormattedDateTime() << "-----------\n" << std::endl;
+				file << "---------BEGIN: "
+				     << this->timemgr.GetFormattedDateTime()
+				     << "-----------\n" << std::endl;
 		}
-		
+
 		if( !this->logfile && file ) {
-			file << "\n-----------END: " << this->timemgr.GetFormattedDateTime() << "-----------\n" << std::endl;
+			file << "\n-----------END: "
+			     << this->timemgr.GetFormattedDateTime()
+			     << "-----------\n" << std::endl;
 			file.close();
 		}
 
 		int ctr = 0;
 		while( !this->logstrings.empty() && ctr < this->max_logs_per_iter ) {
-			std::string fmtstr = this->GetFormattedLogString( * logstrings.begin() );
+			std::string fmtstr =
+				this->GetFormattedLogString( * logstrings.begin() );
 
 			if( this->logfile ) {
 				file << fmtstr << std::endl;
@@ -112,7 +123,8 @@ void Logger::InternalBeginLogging()
 
 	std::lock_guard< std::mutex > mtx_guard( mtx );
 	while( !this->logstrings.empty() ) {
-		std::string fmtstr = this->GetFormattedLogString( * logstrings.begin() );
+		std::string fmtstr =
+			this->GetFormattedLogString( * logstrings.begin() );
 		if( fmtstr.empty() ) {
 			fmtstr = "Log string error!";
 		}
@@ -132,7 +144,9 @@ void Logger::InternalBeginLogging()
 	}
 
 	if( file ) {
-		file << "\n-----------END: " << this->timemgr.GetFormattedDateTime() << "-----------\n" << std::endl;
+		file << "\n-----------END: "
+		     << this->timemgr.GetFormattedDateTime()
+		     << "-----------\n" << std::endl;
 		file.close();
 	}
 
@@ -140,21 +154,17 @@ void Logger::InternalBeginLogging()
 	// But still, for the sake of safety.
 	this->continue_logging = false;
 
-	SetLastError( Errors::SUCCESS, "[ Logger ][ InternalBeginLogging ]: Logging finished. Exiting async execution." );
+	SetLastError( Errors::SUCCESS,
+		      "[ Logger ][ InternalBeginLogging ]: Logging finished."
+		      " Exiting async execution." );
 }
 
-Logger::Logger() : logformat( GetDefaultLogFormat() ), sections( "" )
-{
-	loglevel = LogLevels::ALL;
-
-	max_logs_per_iter = DEFAULT_MAX_LOGS_PER_ITERATION;
-
-	logfile = false;
-	logconsole = true;
-	logconsolelocation = LogConsoleLocation::CERR;
-
-	continue_logging = false;
-}
+Logger::Logger() : max_logs_per_iter( DEFAULT_MAX_LOGS_PER_ITERATION ),
+		   logfile( false ), logconsole( true ),
+		   logconsolelocation( LogConsoleLocation::CERR ),
+		   continue_logging( false ), logformat( GetDefaultLogFormat() ),
+		   sections( "" )
+{}
 
 Logger::~Logger()
 {
@@ -167,11 +177,13 @@ Logger::~Logger()
 		t.join();
 }
 
-void Logger::AddLogStrings( const LogLevels & loglevel, const std::vector< std::string > & logstrs )
+void Logger::AddLogStrings( const LogLevels & loglevel,
+			    const std::vector< std::string > & logstrs )
 {
 	if( ( int )this->loglevel < ( int )loglevel )
 		return;
-	// Time before lock guard since we can't be sure how long lock guard will take to aquire mutex.
+	// Time before lock guard since we can't be sure how long lock guard
+	// will take to aquire mutex.
 	auto currtime = std::time( NULL );
 	std::lock_guard< std::mutex > mtx_guard( mtx );
 	for( auto logstr : logstrs )
@@ -182,7 +194,8 @@ void Logger::AddLogString( const LogLevels & loglevel, const std::string & logst
 {
 	if( ( int )this->loglevel < ( int )loglevel )
 		return;
-	// Time before lock guard since we can't be sure how long lock guard will take to aquire mutex.
+	// Time before lock guard since we can't be sure how long lock guard
+	// will take to aquire mutex.
 	auto currtime = std::time( NULL );
 	std::lock_guard< std::mutex > mtx_guard( mtx );
 	logstrings.push_back( { logstr, currtime, this->sections } );
@@ -191,26 +204,32 @@ void Logger::AddLogString( const LogLevels & loglevel, const std::string & logst
 bool Logger::BeginLogging()
 {
 	if( this->continue_logging ) {
-		SetLastError( Errors::VAR_NOT_SET, "[ Logger ][ BeginLogging ]: Logger is already running." );
+		SetLastError( Errors::VAR_NOT_SET,
+			      "[ Logger ][ BeginLogging ]: Logger"
+			      " is already running." );
 		return false;
 	}
 
 	if( this->filename.empty() && this->logfile ) {
 		SetLastError( Errors::VAR_NOT_SET,
-			"[ Logger ][ BeginLogging ]: Log file is not set. Do so using Logger::SetLogFile function." );
+			      "[ Logger ][ BeginLogging ]: Log file is not set."
+			      " Do so using Logger::SetLogFile function." );
 		return false;
 	}
 
 	if( this->logformat.empty() ) {
 		SetLastError( Errors::VAR_NOT_SET,
-			"[ Logger ][ BeginLogging ]: No log format specified. Do so using Logger::SetLogFormat function." );
+			      "[ Logger ][ BeginLogging ]: No log format specified."
+			      " Do so using Logger::SetLogFormat function." );
 		return false;
 	}
 
 	if( !this->logfile && !this->logconsole ) {
 		SetLastError( Errors::VAR_NOT_SET,
-			"[ Logger ][ BeginLogging ]: Nowhere to log data. Both logfile and logconsole are disabled."
-			" Enable at least one using Logger::SetLogInFile / Logger::SetLogOnConsole functions." );
+			      "[ Logger ][ BeginLogging ]: Nowhere to log data."
+			      " Both logfile and logconsole are disabled."
+			      " Enable at least one using Logger::SetLogInFile /"
+			      " Logger::SetLogOnConsole functions." );
 		return false;
 	}
 
@@ -218,8 +237,10 @@ bool Logger::BeginLogging()
 		std::fstream testfile;
 		testfile.open( this->filename, std::ios::out | std::ios::app );
 		if( !testfile ) {
-			SetLastError( Errors::FILE_NOT_OPEN, "[ Logger ][ BeginLogging ]: Unable to open file for logging: " + this->filename +
-				". Cannot begin logging." );
+			SetLastError( Errors::FILE_NOT_OPEN,
+				      "[ Logger ][ BeginLogging ]: Unable to open"
+				      " file for logging: " + this->filename +
+				      ". Cannot begin logging." );
 			return false;
 		}
 	}
@@ -296,7 +317,8 @@ void Logger::AddLogSection( const std::string & section )
 	this->nestedsections.push_back( section );
 
 	this->sections = "[ ";
-	for( auto it = this->nestedsections.begin(); it != this->nestedsections.end(); ++it ) {
+	for( auto it = this->nestedsections.begin(); it != this->nestedsections.end();
+	     ++it ) {
 		if( it == this->nestedsections.end() - 1 ) {
 			this->sections += * it + " ]";
 			continue;
@@ -326,7 +348,8 @@ bool Logger::RemoveLastLogSection()
 	this->nestedsections.pop_back();
 
 	this->sections = "[ ";
-	for( auto it = this->nestedsections.begin(); it != this->nestedsections.end(); ++it ) {
+	for( auto it = this->nestedsections.begin(); it != this->nestedsections.end();
+	     ++it ) {
 		if( it == this->nestedsections.end() - 1 ) {
 			this->sections += * it + " ]";
 			continue;

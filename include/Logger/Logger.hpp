@@ -44,7 +44,8 @@ class Logger
 
 	std::vector< std::thread > threadpool;
 
-	std::string ReplaceSpecifierByInformation( const std::string & specifier, const TimedString & logmsg );
+	std::string ReplaceSpecifierByInformation( const std::string & specifier,
+						   const TimedString & logmsg );
 	std::string GetFormattedLogString( const TimedString & logmsg );
 
 	void InternalBeginLogging();
@@ -54,7 +55,8 @@ public:
 	Logger();
 	~Logger();
 
-	void AddLogStrings( const LogLevels & loglevel, const std::vector< std::string > & logstrs );
+	void AddLogStrings( const LogLevels & loglevel,
+			    const std::vector< std::string > & logstrs );
 	void AddLogString( const LogLevels & loglevel, const std::string & logstr );
 
 	bool BeginLogging();

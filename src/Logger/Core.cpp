@@ -3,19 +3,19 @@
 
 #include "../../include/Logger/Core.hpp"
 
-std::string GetDefaultTimeDateFormat()
+const std::string & GetDefaultTimeDateFormat()
 {
 	static const std::string DEFAULT_TIMEDATE_FORMAT = "%ds% %MS% %D% %YS% - %HH%:%MM%:%SS%";
 	return DEFAULT_TIMEDATE_FORMAT;
 }
 
-std::string GetDefaultLogFormat()
+const std::string & GetDefaultLogFormat()
 {
 	static const std::string DEFAULT_LOG_FORMAT = "%t% -> %s% : %l%";
 	return DEFAULT_LOG_FORMAT;
 }
 
-std::string GetErrorStrFromCode( const int which )
+const std::string & GetErrorStrFromCode( const int which )
 {
 	static const std::string ERRORSTR[ ( int )Errors::LAST ] = {
 		"Success",
